@@ -3,7 +3,10 @@ package com.hjl.gulimall.coupon.controller;
 import java.util.Arrays;
 import java.util.Map;
 
+import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,11 +25,30 @@ import com.hjl.gulimall.coupon.service.CouponService;
  * @email 965374246@qq.com
  * @date 2022-10-15 14:51:24
  */
+
+@RefreshScope
 @RestController
 @RequestMapping("coupon/coupon")
 public class CouponController {
     @Autowired
     private CouponService couponService;
+
+    @Value("${coupon.user.name}")
+    private String name;
+    @Value("${coupon.user.age}")
+    private Integer age;
+
+    @RequestMapping("/test")
+    public R testConfig() {
+        return R.ok().put("name", name).put("age", age);
+    }
+
+    @RequestMapping("/member/list")
+    public R memberCoupons() {
+        CouponEntity coupon = new CouponEntity();
+        coupon.setCouponName("满200-150");
+        return R.ok().put("coupon", Lists.newArrayList(coupon));
+    }
 
     /**
      * 列表
